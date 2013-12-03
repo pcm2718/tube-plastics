@@ -4,17 +4,21 @@ class Matrix:
 
     # Constructor, assumes that the matrix is square if only one dimension argument is provided.
     def __init__(self, n, m=None, values=[]):
-        if m == None:
-            m = n
+        if n == None:
+            self.n = 1
+            self.m = len(Values)
+        elif m == None:
+            self.n = n
+            self.m = len(values)/self.n
+        else:
+            self.n = n
+            self.m = m
 
-        self.n = n
-        self.m = m
+        if len(values) != self.m*self.n:
+            raise ValueError("Values array does not match specified dimensions.")
 
         values = map(lambda x : float(x), values)
-        if len(values) == self.n*self.m:
-            self.values = values[0:self.n*self.m]
-        else:
-            raise ValueError("Values array does not match matrix size.")
+        self.values = values[0:self.n*self.m]
 
 
 
@@ -47,7 +51,7 @@ class Matrix:
 
 
     # Set a matrix entry with the syntax mat[i, j] = b.
-    def __setitem__(self, a, b):
+    def __setitem__(self, a):
         self.values[(a[0] % self.n)*self.m + a[1] % self.m] = b
 
 
@@ -132,6 +136,55 @@ class Matrix:
 
 
 
+    # Swap two rows, indexed from 0, and return the resulting Matrix.
+    def row_swap(self, row_1, row_2):
+        row_1 = row_1 % self.n
+        row_2 = row_2 % self.n
+        mat = Matrix(self.m, self.n, self.values)
+        temp = mat.values[row_1*mat.m:(row_1+1)*self.m]
+        mat.values[row_1*mat.m:(row_1+1)*self.m] = mat.values[row_2*mat.m:(row_2+1)*self.m]
+        mat.values[row_2*mat.m:(row_2+1)*self.m] = temp
+        return mat
+
+
+
+    # Multiply a row, indexed from 0, by a scalar, and return new Matrix.
+    def row_mult(self, row, sca):
+        row = row % self.n
+        mat = Matrix(self.m, self.n, self.values)
+        mat.values[row*self.m:(row+1)*self.m] = [sca * x for x in mat.values[row*mat.m:(row+1)*mat.m]]
+        return mat
+
+
+
+    # Perform linear row combination, and return the new Matrix.
+    def row_comb(self, row_dest, row_from, sca_from):
+        row_dest = row_dest % self.n
+        row_from = row_from % self.n
+        mat = Matrix(self.m, self.n, self.values)
+        mat.values[row_dest*mat.m:(row_dest+1)*mat.m] = map(lambda x : x[0] + sca_from*x[1], zip(mat.values[row_dest*mat.m:(row_dest+1)*mat.m], mat.values[row_from*mat.m:(row_from+1)*mat.m]))
+        return mat
+
+
+
+    # Not yet implemented.
+    def is_triangular(self):
+        pass
+
+
+
+    # Not yet implemented.
+    def is_upper(self):
+        pass
+
+
+
+    # Not yet implemented.
+    def is_lower(self):
+        pass
+
+
+
 # This class is a subclass of Matrix, always creating a null matrix on initializaiton.
 class NullMatrix(Matrix):
 
@@ -150,3 +203,13 @@ class IdentityMatrix(Matrix):
         for i in range(0, dim):
             values[i*dim + i] = 1
         Matrix.__init__(self, dim, dim, values)
+
+
+
+# This class is a subclass designed to represent a row vector of size n by extending the Matrix class.
+# I'll add this later.
+
+
+
+# This class is a subclass designed to represent a column vector of size n by extending the Matrix class.
+# I'll add this later.
