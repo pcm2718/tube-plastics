@@ -1,5 +1,5 @@
 from matrix import Matrix, NullMatrix, IdentityMatrix
-from cholesky import Cholesky
+from rowreduce import RowReduce
 
 print ""
 print ""
@@ -57,4 +57,4 @@ print "Copyright Parker Michaelson, 2013. Thanks for using Tube Alloys! :-)"
 print ""
 print ""
 
-decomp = Cholesky()
+rowreduce = RowReduce()
